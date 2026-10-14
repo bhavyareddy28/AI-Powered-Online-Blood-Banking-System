@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blood Requests | AI Blood Bank</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🩸 AI Blood Bank
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/admin/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/admin/inventory">
+                Inventory
+            </a>
+
+            <a href="/admin/requests">
+                Blood Requests
+            </a>
+
+            <a href="/notifications">
+                Notifications
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Blood Requests Section -->
+
+    <section class="dashboard">
+
+        <div class="dashboard-container">
+
+            <div class="dashboard-header">
+
+                <h1>
+                    🩸 Blood Requests
+                </h1>
+
+                <p>
+                    View and manage blood requests submitted by users.
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                {% if requests %}
+
+                <div class="request-table-wrapper">
+
+                    <table class="request-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>ID</th>
+                                <th>Patient</th>
+                                <th>Blood Group</th>
+                                <th>Units</th>
+                                <th>Hospital</th>
+                                <th>City</th>
+                                <th>Phone</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for request in requests %}
+
+                            <tr>
+
+                                <td>
+                                    {{ request.id }}
+                                </td>
+
+                                <td>
+                                    {{ request.patient_name }}
+                                </td>
+
+                                <td>
+                                    {{ request.blood_group }}
+                                </td>
+
+                                <td>
+                                    {{ request.units_required }}
+                                </td>
+
+                                <td>
+                                    {{ request.hospital_name }}
+                                </td>
+
+                                <td>
+                                    {{ request.city }}
+                                </td>
+
+                                <td>
+                                    {{ request.phone }}
+                                </td>
+
+                                <td>
+                                    {{ request.request_date }}
+                                </td>
+
+
+                                <!-- Status -->
+
+                                <td>
+
+                                    {% if request.status == "Pending" %}
+
+                                        <span class="request-status pending">
+                                            Pending
+                                        </span>
+
+                                    {% elif request.status == "Approved" %}
+
+                                        <span class="request-status approved">
+                                            Approved
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="request-status rejected">
+                                            {{ request.status }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Actions -->
+
+                                <td class="request-actions">
+
+                                    {% if request.status == "Pending" %}
+
+                                        <!-- Approve -->
+
+                                        <form
+                                            action="/admin/request/{{ request.id }}/approve"
+                                            method="POST"
+                                            style="display:inline;"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="request-btn approve-btn"
+                                            >
+                                                ✓ Approve
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- Reject -->
+
+                                        <form
+                                            action="/admin/request/{{ request.id }}/reject"
+                                            method="POST"
+                                            style="display:inline;"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="request-btn reject-btn"
+                                            >
+                                                ✕ Reject
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <span class="request-completed">
+                                            Completed
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                <div class="no-profile">
+
+                    No blood requests found.
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <p>
+            © 2026 AI Blood Banking System | Admin Blood Requests
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

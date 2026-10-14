@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Dashboard | AI Blood Bank</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🩸 AI Blood Bank
+        </div>
+
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/user/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/request-blood">
+                Request Blood
+            </a>
+
+            <a href="/matches">
+                Smart Matching
+            </a>
+
+            <a href="/notifications">
+                Notifications
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- User Dashboard -->
+    <section class="dashboard">
+
+        <div class="dashboard-container">
+
+            <!-- Welcome -->
+            <div class="dashboard-header">
+
+                <h1>
+                    Welcome, {{ session["user_name"] }}!
+                </h1>
+
+                <p>
+                    Manage your donor profile and access blood bank services.
+                </p>
+
+            </div>
+
+
+            {% if donor %}
+
+            <!-- Donor Details -->
+            <div class="dashboard-card">
+
+                <h2>
+                    Donor Details
+                </h2>
+
+                <div class="dashboard-grid">
+
+                    <div class="dashboard-item">
+                        <span>Name</span>
+                        <strong>{{ donor.name }}</strong>
+                    </div>
+
+                    <div class="dashboard-item">
+                        <span>Blood Group</span>
+                        <strong>{{ donor.blood_group }}</strong>
+                    </div>
+
+                    <div class="dashboard-item">
+                        <span>City</span>
+                        <strong>{{ donor.city }}</strong>
+                    </div>
+
+                    <div class="dashboard-item">
+                        <span>Phone</span>
+                        <strong>{{ donor.phone }}</strong>
+                    </div>
+
+                    <div class="dashboard-item">
+                        <span>Email</span>
+                        <strong>{{ donor.email }}</strong>
+                    </div>
+
+                    <div class="dashboard-item">
+                        <span>Availability</span>
+
+                        {% if donor.available %}
+                            <strong>Available</strong>
+                        {% else %}
+                            <strong>Not Available</strong>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="dashboard-item">
+                        <span>Last Donation Date</span>
+
+                        {% if donor.last_donation_date %}
+                            <strong>{{ donor.last_donation_date }}</strong>
+                        {% else %}
+                            <strong>Not provided</strong>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <!-- No Donor Profile -->
+            <div class="dashboard-card">
+
+                <h2>
+                    Donor Profile
+                </h2>
+
+                <div class="no-profile">
+                    No donor profile found for this account.
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Quick Actions -->
+            <div class="dashboard-card">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <div class="dashboard-buttons">
+
+                    <a href="/" class="btn primary">
+                        Home
+                    </a>
+
+                    <a href="/request-blood" class="btn secondary">
+                        Request Blood
+                    </a>
+
+                    <a href="/matches" class="btn primary">
+                        Smart Matching
+                    </a>
+
+                    <a href="/notifications" class="btn secondary">
+                        Notifications
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            © 2026 AI Blood Banking System | Final Year Project
+        </p>
+
+    </footer>
+
+</body>
+</html>

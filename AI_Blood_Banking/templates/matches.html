@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Donor Matching | AI Blood Bank</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .match-score {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #f1f8f4;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .match-score strong {
+            color: #b30000;
+        }
+
+        .score-high {
+            color: #198754;
+        }
+
+        .score-medium {
+            color: #d68910;
+        }
+
+        .score-low {
+            color: #dc3545;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🩸 AI Blood Bank
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/register">Become a Donor</a>
+            <a href="/request-blood">Request Blood</a>
+            <a href="/matches">Smart Matching</a>
+        </div>
+
+    </nav>
+
+
+    <!-- Matching Section -->
+    <section class="form-section">
+
+        <div class="form-container">
+
+            <!-- Search Form -->
+            <h1>🤝 Smart Donor Matching</h1>
+
+            <p class="form-subtitle">
+                Find suitable donors for your blood request.
+            </p>
+
+
+            <form method="POST">
+
+                <div class="form-group">
+
+                    <label>Blood Group Required</label>
+
+                    <select name="blood_group" required>
+
+                        <option value="">
+                            Select Blood Group
+                        </option>
+
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>City</label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder="Enter required location"
+                        required>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn primary form-button">
+
+                    Find Suitable Donors
+
+                </button>
+
+            </form>
+
+
+            <!-- Donor Results -->
+            {% if request.method == "POST" %}
+
+                {% if donors %}
+
+                    <div class="matching-results">
+
+                        <h2>🤝 Suitable Donors</h2>
+
+                        <p class="form-subtitle">
+                            Donors are ranked based on blood group,
+                            location and availability.
+                        </p>
+
+
+                        {% for donor in donors %}
+
+                            <div class="donor-card">
+
+                                <div class="donor-header">
+
+                                    <div class="donor-icon">
+                                        👤
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            {{ donor.name }}
+                                        </h3>
+
+
+                                        {% if donor.match_score == 100 %}
+
+                                            <span class="match-label">
+                                                ✓ Excellent Match
+                                            </span>
+
+                                        {% elif donor.match_score >= 70 %}
+
+                                            <span class="match-label">
+                                                ✓ Good Match
+                                            </span>
+
+                                        {% elif donor.match_score >= 40 %}
+
+                                            <span class="match-label">
+                                                ✓ Partial Match
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="match-label">
+                                                Available Donor
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="donor-details">
+
+                                    <p>
+                                        🩸
+                                        <strong>
+                                            Blood Group:
+                                        </strong>
+                                        {{ donor.blood_group }}
+                                    </p>
+
+
+                                    <p>
+                                        🎂
+                                        <strong>
+                                            Age:
+                                        </strong>
+                                        {{ donor.age }}
+                                    </p>
+
+
+                                    <p>
+                                        📍
+                                        <strong>
+                                            City:
+                                        </strong>
+                                        {{ donor.city }}
+                                    </p>
+
+
+                                    <p>
+                                        📞
+                                        <strong>
+                                            Contact:
+                                        </strong>
+                                        {{ donor.phone }}
+                                    </p>
+
+
+                                    {% if donor.email %}
+
+                                        <p>
+                                            📧
+                                            <strong>
+                                                Email:
+                                            </strong>
+                                            {{ donor.email }}
+                                        </p>
+
+                                    {% endif %}
+
+
+                                    <!-- Match Score -->
+                                    <div class="match-score">
+
+                                        🎯
+                                        <strong>
+                                            Match Score:
+                                        </strong>
+
+                                        {% if donor.match_score >= 70 %}
+
+                                            <span class="score-high">
+                                                {{ donor.match_score }}%
+                                            </span>
+
+                                        {% elif donor.match_score >= 40 %}
+
+                                            <span class="score-medium">
+                                                {{ donor.match_score }}%
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="score-low">
+                                                {{ donor.match_score }}%
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+                    <!-- No Donors -->
+                    <div class="no-results">
+
+                        <div class="no-results-icon">
+                            🔍
+                        </div>
+
+                        <h2>
+                            No Suitable Donors Found
+                        </h2>
+
+                        <p>
+                            No registered donors were found.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <p>
+            © 2026 AI Blood Banking System |
+            Final Year Project
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

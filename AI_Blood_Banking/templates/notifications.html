@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | AI Blood Bank</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        /* ==============================
+           Notifications Page
+        ============================== */
+
+        .notification-page {
+            min-height: calc(100vh - 140px);
+            padding: 40px 6%;
+        }
+
+        .notification-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ==============================
+           Header
+        ============================== */
+
+        .notification-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .notification-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .notification-header p {
+            margin: 0;
+        }
+
+        /* ==============================
+           Notification List
+        ============================== */
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ==============================
+           Notification Card
+        ============================== */
+
+        .notification-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #e63946;
+        }
+
+        /* ==============================
+           Notification Title
+        ============================== */
+
+        .notification-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .notification-title h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+        }
+
+        /* ==============================
+           Notification Details
+        ============================== */
+
+        .notification-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px 30px;
+            margin-bottom: 15px;
+        }
+
+        .notification-detail {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .notification-detail strong {
+            margin-right: 4px;
+        }
+
+        /* ==============================
+           Message
+        ============================== */
+
+        .notification-message {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-top: 10px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        /* ==============================
+           Notification Footer
+        ============================== */
+
+        .notification-footer {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .notification-status {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .notification-date {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* ==============================
+           Empty Notification
+        ============================== */
+
+        .empty-notification {
+            background: white;
+            text-align: center;
+            padding: 45px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-notification-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .empty-notification h2 {
+            margin-bottom: 8px;
+        }
+
+        .empty-notification p {
+            margin: 0;
+        }
+
+        /* ==============================
+           Responsive Design
+        ============================== */
+
+        @media (max-width: 700px) {
+
+            .notification-page {
+                padding: 25px 15px;
+            }
+
+            .notification-details {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==============================
+         Navigation Bar
+    ============================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🩸 AI Blood Bank
+        </div>
+
+
+        <div class="nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+
+            {% if session.get("user_role") == "admin" %}
+
+                <!-- ADMIN NAVIGATION -->
+
+                <a href="/admin/dashboard">
+                    Dashboard
+                </a>
+
+                <a href="/admin/inventory">
+                    Inventory
+                </a>
+
+                <a href="/notifications">
+                    Notifications
+                </a>
+
+
+            {% else %}
+
+                <!-- USER NAVIGATION -->
+
+                <a href="/user/dashboard">
+                    Dashboard
+                </a>
+
+                <a href="/request-blood">
+                    Request Blood
+                </a>
+
+                <a href="/matches">
+                    Smart Matching
+                </a>
+
+                <a href="/notifications">
+                    Notifications
+                </a>
+
+                <a href="/logout">
+                    Logout
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ==============================
+         Main Notification Section
+    ============================== -->
+
+    <main class="notification-page">
+
+        <div class="notification-container">
+
+
+            <!-- PAGE HEADER -->
+
+            <div class="notification-header">
+
+                <h1>
+                    🔔 Donor Notifications
+                </h1>
+
+                <p>
+                    Blood donation requests matching registered donors.
+                </p>
+
+            </div>
+
+
+
+            <!-- ==============================
+                 Notifications Available
+            ============================== -->
+
+            {% if notifications %}
+
+                <div class="notification-list">
+
+
+                    {% for notification in notifications %}
+
+
+                        <div class="notification-card">
+
+
+                            <!-- TITLE -->
+
+                            <div class="notification-title">
+
+                                <span class="notification-icon">
+                                    🩸
+                                </span>
+
+                                <h2>
+                                    Blood Donation Request
+                                </h2>
+
+                            </div>
+
+
+
+                            <!-- DETAILS -->
+
+                            <div class="notification-details">
+
+
+                                <div class="notification-detail">
+
+                                    <strong>
+                                        Donor:
+                                    </strong>
+
+                                    {{ notification.donor_name }}
+
+                                </div>
+
+
+
+                                <div class="notification-detail">
+
+                                    <strong>
+                                        Email:
+                                    </strong>
+
+                                    {{ notification.donor_email }}
+
+                                </div>
+
+
+
+                                <div class="notification-detail">
+
+                                    <strong>
+                                        Blood Group:
+                                    </strong>
+
+                                    {{ notification.blood_group }}
+
+                                </div>
+
+
+
+                                <div class="notification-detail">
+
+                                    <strong>
+                                        City:
+                                    </strong>
+
+                                    {{ notification.city }}
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <!-- MESSAGE -->
+
+                            <div class="notification-message">
+
+                                <strong>
+                                    Message:
+                                </strong>
+
+                                {{ notification.message }}
+
+                            </div>
+
+
+
+                            <!-- FOOTER -->
+
+                            <div class="notification-footer">
+
+                                <div class="notification-status">
+                                    🔵 {{ notification.status }}
+                                </div>
+
+                                <div class="notification-date">
+                                    {{ notification.created_at }}
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- ==============================
+                     No Notifications
+                ============================== -->
+
+                <div class="empty-notification">
+
+                    <div class="empty-notification-icon">
+                        📭
+                    </div>
+
+                    <h2>
+                        No Notifications
+                    </h2>
+
+                    <p>
+                        There are currently no blood donation requests
+                        for registered donors.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ==============================
+         Footer
+    ============================== -->
+
+    <footer>
+
+        <p>
+            © 2026 AI Blood Banking System |
+            Final Year Project
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

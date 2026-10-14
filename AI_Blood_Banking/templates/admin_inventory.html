@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Inventory | AI Blood Bank</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        /* =========================
+           ADMIN NAVBAR
+        ========================= */
+
+        .admin-navbar {
+            width: 100%;
+            height: 78px;
+
+            background: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 55px;
+
+            box-sizing: border-box;
+
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 30px;
+            font-weight: 700;
+
+            color: #222222;
+
+            white-space: nowrap;
+        }
+
+        .admin-nav-links {
+            display: flex;
+            align-items: center;
+
+            gap: 28px;
+
+            white-space: nowrap;
+        }
+
+        .admin-nav-links a {
+            text-decoration: none;
+
+            color: #222222;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .admin-nav-links a:hover {
+            color: #d92323;
+        }
+
+
+        /* =========================
+           PAGE
+        ========================= */
+
+        .admin-page {
+            min-height: calc(100vh - 78px);
+
+            background: #fff6f6;
+
+            padding: 60px 30px;
+
+            box-sizing: border-box;
+        }
+
+        .admin-container {
+            max-width: 900px;
+
+            margin: auto;
+
+            background: #ffffff;
+
+            padding: 45px;
+
+            border-radius: 18px;
+
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .admin-container h1 {
+            text-align: center;
+
+            font-size: 36px;
+
+            margin-bottom: 10px;
+        }
+
+        .admin-subtitle {
+            text-align: center;
+
+            color: #666666;
+
+            margin-bottom: 35px;
+
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           SUCCESS MESSAGE
+        ========================= */
+
+        .success-message {
+            background: #eaf8ee;
+
+            color: #218838;
+
+            padding: 12px 15px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .admin-form {
+            background: #fff8f8;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            margin-bottom: 35px;
+        }
+
+        .admin-form h2 {
+            font-size: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .admin-form-group {
+            margin-bottom: 18px;
+        }
+
+        .admin-form-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: 600;
+
+            font-size: 14px;
+        }
+
+        .admin-form-group select,
+        .admin-form-group input {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #dddddd;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+
+            box-sizing: border-box;
+
+            outline: none;
+        }
+
+        .admin-form-group select:focus,
+        .admin-form-group input:focus {
+            border-color: #d92323;
+        }
+
+        .update-button {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #d92323;
+
+            color: #ffffff;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .update-button:hover {
+            background: #b91d1d;
+        }
+
+
+        /* =========================
+           CURRENT INVENTORY
+        ========================= */
+
+        .current-title {
+            font-size: 21px;
+
+            margin-bottom: 18px;
+        }
+
+        .inventory-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            overflow: hidden;
+
+            border-radius: 8px;
+        }
+
+        .inventory-table th {
+            background: #d92323;
+
+            color: #ffffff;
+
+            padding: 13px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+        .inventory-table td {
+            padding: 13px;
+
+            border-bottom: 1px solid #eeeeee;
+
+            font-size: 14px;
+        }
+
+        .inventory-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .inventory-table tr:hover {
+            background: #fff8f8;
+        }
+
+        .units {
+            font-weight: 700;
+
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .admin-footer {
+            text-align: center;
+
+            padding: 20px;
+
+            background: #ffffff;
+
+            color: #666666;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .admin-navbar {
+                padding: 0 25px;
+            }
+
+            .admin-nav-links {
+                gap: 18px;
+            }
+
+            .admin-nav-links a {
+                font-size: 14px;
+            }
+
+            .admin-logo {
+                font-size: 25px;
+            }
+        }
+
+
+        @media (max-width: 800px) {
+
+            .admin-navbar {
+                height: auto;
+
+                padding: 18px;
+
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+            .admin-nav-links {
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+            .admin-container {
+                padding: 30px 20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav class="admin-navbar">
+
+        <div class="admin-logo">
+            🩸 AI Blood Bank
+        </div>
+
+        <div class="admin-nav-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/register">
+                Become a Donor
+            </a>
+
+            <a href="/request-blood">
+                Request Blood
+            </a>
+
+            <a href="/matches">
+                Smart Matching
+            </a>
+
+            <a href="/inventory">
+                Inventory
+            </a>
+
+            <a href="/admin/dashboard">Admin</a>
+            
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         ADMIN PAGE
+    ========================= -->
+
+    <section class="admin-page">
+
+        <div class="admin-container">
+
+            <h1>
+                ⚙️ Admin Inventory
+            </h1>
+
+            <p class="admin-subtitle">
+                Update and manage the available blood stock.
+            </p>
+
+
+            <!-- SUCCESS MESSAGE -->
+
+            {% if message %}
+
+                <div class="success-message">
+                    ✓ {{ message }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- UPDATE FORM -->
+
+            <div class="admin-form">
+
+                <h2>
+                    🩸 Update Blood Stock
+                </h2>
+
+                <form method="POST">
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Blood Group
+                        </label>
+
+                        <select name="blood_group" required>
+
+                            <option value="">
+                                Select Blood Group
+                            </option>
+
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="admin-form-group">
+
+                        <label>
+                            Units Available
+                        </label>
+
+                        <input
+                            type="number"
+                            name="units_available"
+                            min="0"
+                            placeholder="Enter number of units"
+                            required>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="update-button">
+
+                        Update Inventory
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- CURRENT INVENTORY -->
+
+            <h2 class="current-title">
+                📊 Current Blood Stock
+            </h2>
+
+
+            <table class="inventory-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Blood Group
+                        </th>
+
+                        <th>
+                            Units Available
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in inventory %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ item.blood_group }}
+                            </strong>
+                        </td>
+
+                        <td class="units">
+                            {{ item.units_available }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer class="admin-footer">
+
+        © 2026 AI Blood Banking System | Final Year Project
+
+    </footer>
+
+
+</body>
+
+</html>
